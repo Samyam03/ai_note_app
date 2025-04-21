@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Layout, Shield } from 'lucide-react'
 import { Progress } from "@/components/ui/progress"
+import Dialogbox from './dialogbox'
 
 function Sidebar() {
   return (
@@ -13,9 +14,13 @@ function Sidebar() {
         </div>
 
         <div className="mt-10 space-y-4">
-          <Button className="w-full bg-sky-600 hover:bg-sky-400 hover:ring-2 hover:ring-sky-200 transform hover:scale-115 transition-all duration-200 font-semibold text-white rounded-lg py-2 shadow-lg">
-            Upload PDF
-          </Button>
+        <div className="flex justify-center">
+  <Dialogbox>
+    <Button className="w-full bg-sky-600 hover:bg-sky-400 hover:ring-2 hover:ring-sky-200 transform hover:scale-105 transition-all duration-200 font-semibold text-white rounded-lg py-2 shadow-lg max-w-xs">
+      Upload PDF
+    </Button>
+  </Dialogbox>
+</div>
 
           <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-600 transform hover:scale-115 transition-all duration-200 cursor-pointer">
             <Layout className="w-5 h-5" />
