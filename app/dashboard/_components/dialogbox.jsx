@@ -18,6 +18,7 @@ import { api } from "@/convex/_generated/api";
 import { Loader2Icon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import {useUser} from '@clerk/nextjs';
+import axios, { Axios } from "axios";
 
 
 function Dialogbox({ children }) {
@@ -36,7 +37,7 @@ function Dialogbox({ children }) {
   
   const onFileUpload = async () => {
     setLoading(true);
-    try {
+
       const postUrl = await generateUploadUrl();
       const result = await fetch(postUrl, {
         method: "POST",
@@ -58,12 +59,12 @@ function Dialogbox({ children }) {
   
       console.log(response);
       alert("File uploaded successfully");
-    } catch (error) {
-      console.error("Upload failed:", error);
-      alert("Upload failed: " + error.message);
-    } finally {
+    
+    
+      const apiResponse =  await axios.get('./api/pdf_loader')
+      console.log(apiResponse.data.result);
       setLoading(false);
-    }
+    
   }
 
 
