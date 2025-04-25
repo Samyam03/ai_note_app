@@ -2,9 +2,14 @@ import { NextResponse } from 'next/server';
 import { WebPDFLoader } from '@langchain/community/document_loaders/web/pdf';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
-const pdfUrl="https://sleek-ladybug-725.convex.cloud/api/storage/6ecd26a0-0a10-49f9-9851-cab949463698"
+
 
 export async function GET(request) {
+    const  requestUrl = request.url;
+    const {searchParams} = new URL(requestUrl);
+    const pdfUrl = searchParams.get('pdfUrl');
+    console.log(pdfUrl);
+
     const response = await fetch(pdfUrl);
     const data = await response.blob();
     const pdfLoader = new WebPDFLoader(data);
@@ -16,8 +21,8 @@ export async function GET(request) {
     });
 
     const splitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 100,
-        chunkOverlap: 20,
+        chunkSize: 1500,
+        chunkOverlap: 200,
     });
 
     const output = await splitter.createDocuments([pdfTextContent]);
