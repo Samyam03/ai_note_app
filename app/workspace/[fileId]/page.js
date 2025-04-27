@@ -5,6 +5,7 @@ import WorkspaceHeader from '../_components/workspaceHeader';
 import PdfViewer from '../_components/pdfViewer';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import TextEditor from '../_components/texteditor';
 
 function Workspace() {
     const { fileId } = useParams();
@@ -25,9 +26,9 @@ function Workspace() {
         <div className="flex flex-col h-screen">
       <WorkspaceHeader />
       <div className="flex flex-1">
-        {/* Left side: Reserved for additional workspace UI (e.g., notes) */}
+        
         <div className="w-1/2 border-r border-gray-200 p-4 overflow-auto">
-          {/* Reserved for additional workspace UI */}
+           <TextEditor />
         </div>
 
         {/* Right side: PDF Viewer */}
