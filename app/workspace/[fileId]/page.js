@@ -13,7 +13,7 @@ function Workspace() {
         fileId: fileId
     });
 
-    const currentFile = fileInfo?.[0];
+    const currentFile = fileInfo;
 
     // Only log when fileInfo is actually available
     useEffect(() => {

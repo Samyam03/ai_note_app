@@ -1,7 +1,32 @@
+import { api } from '@/convex/_generated/api';
 import React from 'react'
-import { FaBold, FaItalic, FaStrikethrough, FaUndo, FaRedo, FaQuoteLeft, FaListUl, FaHeading } from 'react-icons/fa';
+import { FaBold, FaItalic, FaStrikethrough, FaUndo, FaRedo, FaQuoteLeft, FaListUl, FaHeading, FaMagic } from 'react-icons/fa';
+import { useAction } from 'convex/react';
+import { useParams } from 'next/navigation';
 
-function EditorExtensions({ editor }) {
+
+function EditorExtensions({ editor}) {
+  const {fileId} = useParams();
+  const searchAI = useAction(api.myAction.search);
+
+  const onAIClick = async() => {
+    // Placeholder for AI functionality
+    const selectedText = editor.state.doc.textBetween(
+      editor.state.selection.from,
+      editor.state.selection.to,
+      ' '
+    );
+    console.log('Selected text:', selectedText);
+
+    const result = await searchAI({
+      query: selectedText,
+      fileId: fileId
+    })
+
+    console.log("Result from AI: ", result)
+
+    
+  };
   return (
     <div className="flex gap-4 p-3 bg-gray-50 rounded-lg shadow-lg">
       <button
@@ -41,7 +66,6 @@ function EditorExtensions({ editor }) {
         <FaRedo className="w-4 h-4" />
       </button>
 
-      {/* Heading 1 Button */}
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         className={`p-2 rounded-md ${editor.isActive('heading', { level: 1 }) ? 'bg-blue-500 text-white' : 'bg-white'} border-2 border-gray-300 hover:bg-blue-100 hover:shadow-sm transition-all`}
@@ -49,7 +73,6 @@ function EditorExtensions({ editor }) {
         <span className="text-sm font-bold">H1</span>
       </button>
       
-      {/* Heading 2 Button */}
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         className={`p-2 rounded-md ${editor.isActive('heading', { level: 2 }) ? 'bg-blue-500 text-white' : 'bg-white'} border-2 border-gray-300 hover:bg-blue-100 hover:shadow-sm transition-all`}
@@ -57,13 +80,21 @@ function EditorExtensions({ editor }) {
         <span className="text-sm font-semibold">H2</span>
       </button>
       
-      {/* Heading 3 Button */}
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         className={`p-2 rounded-md ${editor.isActive('heading', { level: 3 }) ? 'bg-blue-500 text-white' : 'bg-white'} border-2 border-gray-300 hover:bg-blue-100 hover:shadow-sm transition-all`}
       >
         <span className="text-sm font-normal">H3</span>
       </button>
+
+      {/* Sparkles Button */}
+      <button
+        onClick={() => onAIClick()}
+        className="p-2 rounded-md bg-white border-2 border-gray-300 hover:bg-purple-100 hover:shadow-sm transition-all"
+      >
+        <FaMagic className="w-4 h-4 text-purple-500" />
+      </button>
+
     </div>
   );
 }
