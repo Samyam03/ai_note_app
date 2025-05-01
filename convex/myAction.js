@@ -19,7 +19,7 @@ export const ingest = action({
       args.splitText,
       metadataArray, // Pass an array of metadata objects, one per text chunk
       new GoogleGenerativeAIEmbeddings({
-        apiKey: process.env.GOOGLE_API_KEY,
+        apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
         model: "embedding-001", 
         taskType: TaskType.RETRIEVAL_DOCUMENT, 
         title: "Document Title",
@@ -38,7 +38,7 @@ export const search = action({
   handler: async(ctx, args) => {
     const vectorStore = new ConvexVectorStore(
       new GoogleGenerativeAIEmbeddings({
-        apiKey: process.env.GOOGLE_API_KEY,
+        apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
         model: "embedding-001",
         taskType: TaskType.RETRIEVAL_DOCUMENT,
         title: "Document Title",
