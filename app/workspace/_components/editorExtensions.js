@@ -54,38 +54,106 @@ function EditorExtensions({ editor }) {
         return;
       }
   
-      const prompt = `
-You are a professional writing assistant. Generate a response with:
+      const prompt = `You are an expert writing assistant that discerns question intent through linguistic analysis. Follow these flexible but strict guidelines:
 
-1. PRESERVE the original question exactly as written
-2. Use ONLY these HTML tags: <h3>, <p>, <ul>, <ol>, <li>, <strong>, <em>
-3. Follow this EXACT structure:
-   <h3>Original Question</h3>
-   <p>[User's exact question]</p>
-   
-   <h3>Comprehensive Analysis</h3>
-   <p>[Detailed analysis with examples]</p>
-   
-   <h3>Key Takeaways</h3>
-   <ul>
-     <li><strong>Point 1</strong>: Explanation</li>
-     <li><strong>Point 2</strong>: Explanation</li>
-   </ul>
-   
-   <h3>Actionable Advice</h3>
-   <p>[Practical steps to implement]</p>
+=== QUESTION TYPE DETECTION ===
+Analyze through these lenses:
 
-4. Never use: <div>, <span>, <code>, or other complex HTML
-5. Maintain perfect spacing (single line between elements)
-6. Keep responses concise but thorough
+1. DIRECT QUESTION INDICATORS:
+   - Seeks factual recall/definition
+   - Answerable with discrete facts
+   - Requires concise response (<20 words, unless specified)
+   - No request for analysis/compare/application
 
-CONTEXT:
+2. DESCRIPTIVE QUESTION INDICATORS:
+   - Requires synthesis of multiple concepts
+   - Asks for process explanations
+   - Contains comparative language
+   - Requests examples/case studies
+   - Uses verbs: elucidate, delineate, examine
+
+=== GLOBAL STRUCTURAL & FORMATTING RULES ===
+1. Preserve the original question EXACTLY as written (verbatim), unless the user requests modifications.
+2. Adapt formatting based on user requirements:
+   - Use these HTML tags: <h2>, <h3>, <p>, <ul>, <ol>, <li>, <strong>, <em>, <br> (sparingly)
+   - Allow additional formatting upon request (e.g., markdown, numbered lists)
+
+3. NEVER use:
+   - <div>, <span>, <code>, <pre>, <table>, <img>
+   - Inline styles or class attributes
+   - HTML comments or conditional statements
+
+4. WHITESPACE & STRUCTURE REQUIREMENTS:
+   - Maintain readability with proper spacing
+   - Indent nested list items with 2 spaces
+   - Adapt response length based on user preference (short, medium, long)
+   - Wrap text at ~80 characters for clarity
+
+5. CONTENT RULES:
+   - Be comprehensive yet concise (300-500 words for descriptive unless specified otherwise)
+   - Use professional but approachable tone
+   - Support claims with references and examples
+   - Mark speculative statements with "(assumption)"
+   - Include relevant examples per major point
+
+6. SPECIAL CASES:
+   - Factual: Prioritize accuracy over length, adjust as needed
+   - Subjective: Present balanced perspectives with options
+   - Technical: Simplify complex concepts while maintaining depth
+   - Creative: Suggest multiple approaches for varied interpretations
+
+=== STRUCTURE: BASED ON QUESTION TYPE ===
+
+IF DESCRIPTIVE QUESTION:  
+Format using hierarchical structure:
+
+<h2><strong>[User's exact unchanged question]</strong></h2>
+
+<h3><strong>Contextual Background</strong></h3>
+<p>[Brief introduction establishing relevance]</p>
+
+<h3><strong>Detailed Analysis</strong></h3>
+<p>[Multi-paragraph breakdown with concrete examples]</p>
+
+<h3><strong>Key Insights</strong></h3>
+
+<strong>1. [Insight Title]</strong>
+<p>[Explanation with practical implications]</p>
+
+<strong>2. [Insight Title]</strong>
+<p>[Explanation with practical implications]</p>
+
+<strong>3. [Insight Title]</strong>
+<p>[Explanation with practical implications]</p>
+
+<h3><strong>Conclusion</strong></h3>
+<p>[Summarize the main points and their implications]</p>
+
+<h3><strong>Final Summary</strong></h3>
+<p>[Concise recap of most important takeaways]</p>
+
+IF DIRECT QUESTION:  
+Format concisely:
+
+<h2><strong>[User's exact unchanged question]</strong></h2>
+<p>[Accurate factual answer, ≤20 words unless specified otherwise]</p>
+
+IF OTHER FORMATS REQUESTED:
+Adjust formatting based on user preference (e.g., numbered lists, markdown headers).
+
+=== USER SPECIFIC REQUIREMENTS ===
+- If user provides length constraints, adjust response accordingly.
+- If user requests alternative formatting, apply structured adaptation.
+- If user requests a particular tone or style, match it appropriately.
+
+=== CONTEXT PROVIDED ===
 ${context}
 
-USER'S QUESTION:
+=== USER'S ORIGINAL QUERY ===
 "${selectedText}"
 
-Respond with ONLY the formatted HTML content:`;
+Respond with ONLY the requested format (no introductory text, no code fences, no apologies, no notes).`;
+
   
       const response = await generateAIResponse(prompt);
       
@@ -101,45 +169,24 @@ Respond with ONLY the formatted HTML content:`;
         .replace(/\s+(<\/[^>]+>)/g, '$1')
         .trim();
 
-      // Parse and sanitize HTML
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = cleanedResponse;
       
-      const allowedTags = ['H3', 'P', 'UL', 'OL', 'LI', 'STRONG', 'EM', 'BR'];
-      const elementsToRemove = [];
-      
-      tempDiv.querySelectorAll('*').forEach(element => {
-        if (!allowedTags.includes(element.tagName)) {
-          elementsToRemove.push(element);
-        }
-      });
-      
-      elementsToRemove.forEach(element => {
-        const parent = element.parentNode;
-        while (element.firstChild) {
-          parent.insertBefore(element.firstChild, element);
-        }
-        parent.removeChild(element);
-      });
-  
-      cleanedResponse = tempDiv.innerHTML;
 
       // Insert the formatted response with Tailwind classes
-      editor.commands.insertContent(`
-        <div class="ai-response bg-blue-50 p-4 rounded-lg my-4 border border-blue-200 overflow-auto w-full">
-          <div class="prose max-w-none">${cleanedResponse}
-            <p class="mt-3 text-xs text-blue-500 italic">AI-generated content - verify accuracy as needed</p>
+      editor.chain().focus().setContent(`
+        <div style="background-color: #eff6ff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; border: 1px solid #bfdbfe; overflow: auto; width: 100%;">
+          <div style="max-width: none;">
+            ${cleanedResponse}
+            <p style="margin-top: 0.75rem; color: #3b82f6; font-style: italic;">
+            <br/>
+              AI-generated content - verify accuracy as needed
+            </p>
           </div>
         </div>
-        <p class="py-1"></p>
-      `);
+      `).run();
   
-      if (hasSelection) {
-        const endPos = editor.state.selection.to;
-        editor.commands.setTextSelection(endPos + 1);
-      }
   
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('AI generation failed:', error);
       editor.commands.insertContent(`
         <div class="ai-error bg-red-50 p-4 rounded-lg my-4 border border-red-200">
@@ -147,7 +194,8 @@ Respond with ONLY the formatted HTML content:`;
           <p class="text-red-600 text-sm">${error.message || 'Please try again later'}</p>
         </div>
       `);
-    } finally {
+    } 
+    finally {
       setIsGenerating(false);
     }
   };
