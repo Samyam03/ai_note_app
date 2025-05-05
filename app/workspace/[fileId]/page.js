@@ -24,7 +24,7 @@ function Workspace() {
 
     return (
         <div className="flex flex-col h-screen">
-      <WorkspaceHeader />
+      <WorkspaceHeader fileName={fileInfo?.fileName}/>
       <div className="flex flex-1">
         
         <div className="w-1/2 border-r border-gray-200 p-4 overflow-auto">

@@ -15,6 +15,7 @@ import {
 import { useAction } from 'convex/react';
 import { useParams } from 'next/navigation';
 import { generateAIResponse } from '@/configs/aiModel';
+import { toast } from 'sonner';
 
 function EditorExtensions({ editor }) {
   const { fileId } = useParams();
@@ -22,8 +23,10 @@ function EditorExtensions({ editor }) {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const onAIClick = async () => {
+    
     if (!editor || isGenerating) return;
     
+    toast("AI is fetching the result")
     setIsGenerating(true);
     
     try {
@@ -64,7 +67,8 @@ function EditorExtensions({ editor }) {
       
       2. FORMATTING TEMPLATES (when no explicit instructions):
          ALWAYS START WITH QUESTION HEADING:
-         <h2><strong>[User's exact unchanged question]</strong></h2>
+         <h4><strong>[User's exact unchanged question]</strong><br/></h4>
+         <p><strong>Answer :</strong></p>
       
          DESCRIPTIVE QUERIES:
          <h3><strong>Contextual Background</strong></h3>
@@ -155,10 +159,6 @@ function EditorExtensions({ editor }) {
         <div style="background-color: #eff6ff; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; border: 1px solid #bfdbfe; overflow: auto; width: 100%;">
           <div style="max-width: none;">
             ${cleanedResponse}
-            <p style="margin-top: 0.75rem; color: #3b82f6; font-style: italic;">
-            <br/>
-              AI-generated content - verify accuracy as needed
-            </p>
           </div>
         </div>
       `).run();
