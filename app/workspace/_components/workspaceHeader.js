@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { UserButton, SignedIn } from "@clerk/nextjs";
 
 function WorkspaceHeader({ fileName }) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
     <header className="flex items-center justify-between bg-white px-6 py-3 shadow-sm border-b border-gray-200 sticky top-0 z-10">
       <div className="flex items-center gap-3">
@@ -20,23 +26,29 @@ function WorkspaceHeader({ fileName }) {
       
       <div className="flex-1 mx-4">
         <h2 className="text-center text-gray-700 font-medium truncate max-w-md mx-auto">
-          {fileName ? <span className="text-gray-900">{fileName}.pdf</span> : <span className="text-gray-400">Untitled Document</span>}
+          {fileName ? (
+            <span className="text-gray-900">{fileName}.pdf</span>
+          ) : (
+            <span className="text-gray-400">Untitled Document</span>
+          )}
         </h2>
       </div>
       
       <div className="flex-shrink-0">
-        <SignedIn>
-          <div className="hover:bg-gray-100 rounded-full p-1 transition-colors">
-            <UserButton 
-              appearance={{
-                elements: {
-                  userButtonAvatarBox: "w-8 h-8",
-                  userButtonTrigger: "focus:shadow-none"
-                }
-              }}
-            />
-          </div>
-        </SignedIn>
+        {isMounted && (
+          <SignedIn>
+            <div className="hover:bg-gray-100 rounded-full p-1 transition-colors">
+              <UserButton 
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-8 h-8",
+                    userButtonTrigger: "focus:shadow-none"
+                  }
+                }}
+              />
+            </div>
+          </SignedIn>
+        )}
       </div>
     </header>
   );

@@ -28,7 +28,7 @@ function Workspace() {
       <div className="flex flex-1">
         
         <div className="w-1/2 border-r border-gray-200 p-4 overflow-auto">
-           <TextEditor />
+           <TextEditor fileId={fileId}/>
         </div>
 
         {/* Right side: PDF Viewer */}

@@ -2,13 +2,25 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
-import React from 'react'
+import React, { useEffect } from 'react'
 import EditorExtensions from './editorExtensions'
+import { useQuery } from 'convex/react'
+import { getNotes } from '@/convex/notes'
+import { api } from '@/convex/_generated/api'
 
-function TextEditor() {
+
+function TextEditor({fileId}) {
+
+  const notes = useQuery(api.notes.getNotes,{
+    fileId:fileId
+  })
+
+  
+  
+  
   const editor = useEditor({
     extensions: [StarterKit, Placeholder.configure({
-      placeholder: 'Write something …',
+      placeholder: 'Enter the question here …',
     })],
     editorProps: {
       attributes: {
@@ -17,6 +29,12 @@ function TextEditor() {
     },
   })
 
+  useEffect(()=>{
+    editor && editor.commands.setContent(notes)
+  },[editor&&notes])
+
+  
+
   if (!editor) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -24,6 +42,7 @@ function TextEditor() {
       </div>
     )
   }
+
 
   return (
     <div className="flex flex-col h-screen">
