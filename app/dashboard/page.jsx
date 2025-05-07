@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
 function Page() {
   return (
-    <div>
-      Dashboard
+    <div className="text-gray-800">
+      Body
     </div>
-  )
+  );
 }
 
-export default Page
+export default Page;
