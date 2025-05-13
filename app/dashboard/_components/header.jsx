@@ -3,17 +3,18 @@ import { Menu } from "lucide-react";
 
 function Header({ onMenuClick }) {
   return (
-    <header className="flex justify-between items-center bg-white px-4 md:px-6 py-3 shadow-sm border-b border-gray-200">
-      <div className="flex items-center gap-3">
-        {/* Menu button visible only on small screens */}
+    <header className="flex justify-between items-center bg-white px-4 md:px-6 py-4 shadow-md border-b border-gray-300">
+      <div className="flex items-center gap-4">
+        {/* Menu button for small screens */}
         <button
-          className="md:hidden p-2 rounded hover:bg-gray-100 transition"
+          className="md:hidden p-2 rounded-lg hover:bg-gray-200 transition-colors duration-200"
           onClick={onMenuClick}
+          aria-label="Open sidebar"
         >
           <Menu className="h-6 w-6 text-gray-700" />
         </button>
 
-        <h1 className="text-lg md:text-xl font-semibold text-gray-800">Dashboard</h1>
+        <h1 className="text-xl font-semibold text-gray-800">Dashboard</h1>
       </div>
 
       <SignedIn>
