@@ -115,7 +115,6 @@ function EditorExtensions({ editor }) {
          <p>[Single concise answer in 1-2 sentences]</p>
       
       3. CONTENT RULES:
-         - Preserve original question wording AS FIRST ELEMENT
          - Use headings only when instructed or for multi-section answers
          - Bold ONLY section titles and insight headers
          - Lists must match requested count exactly
