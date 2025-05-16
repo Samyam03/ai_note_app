@@ -72,3 +72,40 @@ export const getAllFiles = query({
   },
 });
 
+export const deleteFile = mutation({
+  args: {
+    fileId: v.string(),
+    storageId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    let storageId = args.storageId;
+
+    if (!storageId) {
+      const [doc] = await ctx.db
+        .query("pdfFiles")
+        .filter((q) => q.eq(q.field("fileId"), args.fileId))
+        .collect();
+
+      if (!doc) throw new Error("File not found in database");
+      storageId = doc.storageId;
+
+      if (!storageId) throw new Error("Missing storageId in record");
+      await ctx.db.delete(doc._id);
+    } else {
+      const [doc] = await ctx.db
+        .query("pdfFiles")
+        .filter((q) => q.eq(q.field("fileId"), args.fileId))
+        .collect();
+
+      if (!doc?._id) throw new Error("File not found in database");
+
+      await ctx.storage.delete(storageId);
+      await ctx.db.delete(doc._id);
+    }
+
+    return { success: true };
+  },
+});
+
+
+
