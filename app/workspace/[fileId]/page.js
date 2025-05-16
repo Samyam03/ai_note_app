@@ -15,12 +15,6 @@ function Workspace() {
 
     const currentFile = fileInfo;
 
-    // Only log when fileInfo is actually available
-    useEffect(() => {
-        if (fileInfo) {
-            console.log("fileInfo in Workspace:", fileInfo);
-        }
-    }, [fileInfo]); // Only runs when fileInfo changes
 
     return (
         <div className="flex flex-col h-screen">

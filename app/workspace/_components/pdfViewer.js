@@ -1,7 +1,7 @@
 import React from 'react';
 
 function PdfViewer({ fileUrl }) {
-  console.log("THIS IS FILE"+fileUrl)
+
   return (
     <div className="w-full h-screen bg-gray-100">
         

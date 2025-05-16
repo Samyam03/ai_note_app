@@ -53,10 +53,8 @@ export const search = action({
         5, 
         { fileId: args.fileId }
       );
-      console.log("Results with filter: ", results);
       return JSON.stringify(results);
     } catch (error) {
-      console.log("Filter parameter error, falling back to post-filtering: ", error);
       
       // Fallback: get results and filter them afterward
       const rawResults = await vectorStore.similaritySearch(args.query, 10);
@@ -64,7 +62,6 @@ export const search = action({
         item.metadata && item.metadata.fileId === args.fileId
       );
       
-      console.log("Filtered results: ", filteredResults);
       return JSON.stringify(filteredResults);
     }
   }
