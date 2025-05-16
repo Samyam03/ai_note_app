@@ -29,7 +29,7 @@ function WorkspaceHeader({ fileName }) {
         <div className="flex-1 mx-4">
           <h2 className="text-center text-gray-700 font-medium truncate max-w-md mx-auto">
             {fileName ? (
-              <span className="text-gray-900">{fileName}.pdf</span>
+              <span className="text-gray-900">{fileName}</span>
             ) : (
               <span className="text-gray-400">Untitled Document</span>
             )}
