@@ -1,25 +1,53 @@
 'use client';
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { SignInButton, SignedOut } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function HomePage() {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
   const router = useRouter();
+  const [redirecting, setRedirecting] = useState(false);
 
   // Redirect if signed in
   useEffect(() => {
-    if (isSignedIn) {
+    if (isLoaded && isSignedIn) {
+      setRedirecting(true);
       router.push("/dashboard");
     }
-  }, [isSignedIn, router]);
+  }, [isSignedIn, isLoaded, router]);
+
+  if (redirecting) {
+    // Classic loader screen
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white text-gray-800">
+        <div className="text-center">
+          <div className="loader mb-4 mx-auto"></div>
+          <p className="text-sm">Redirecting to your dashboard...</p>
+        </div>
+        <style jsx>{`
+          .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+          }
+
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-slate-50 to-slate-100 text-gray-800 font-sans">
-      
       {/* Hero Section */}
       <section className="w-full px-4 sm:px-6 md:px-10 lg:px-16 pt-16 pb-20 text-center flex flex-col items-center">
         <div className="max-w-4xl">
@@ -30,19 +58,15 @@ export default function HomePage() {
             height={56}
             className="mx-auto mb-4 opacity-90"
           />
-
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
             Your Personal AI Study Partner
           </h1>
-
           <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto mb-2 leading-relaxed">
             Tired of scattered study notes and half-baked AI answers? <strong>NoteGenius</strong> is your all-in-one tool to ask questions, get smart AI responses, and instantly turn them into clean, editable notes.
           </p>
-
           <p className="text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
             Whether you’re a student, researcher, or lifelong learner — NoteGenius helps you absorb knowledge, stay organized, and never lose a thought again.
           </p>
-
           <div className="mt-6">
             <SignedOut>
               <SignInButton mode="modal">
