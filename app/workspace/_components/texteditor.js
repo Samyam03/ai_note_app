@@ -7,7 +7,7 @@ import EditorExtensions from './editorExtensions'
 import { useQuery } from 'convex/react'
 import { getNotes } from '@/convex/notes'
 import { api } from '@/convex/_generated/api'
-
+import { Loader2 } from 'lucide-react'
 
 function TextEditor({fileId}) {
 
@@ -15,16 +15,13 @@ function TextEditor({fileId}) {
     fileId:fileId
   })
 
-  
-  
-  
   const editor = useEditor({
     extensions: [StarterKit, Placeholder.configure({
-      placeholder: 'Enter the question here …',
+      placeholder: 'Ask your question here and get AI-powered responses...',
     })],
     editorProps: {
       attributes: {
-        class: 'prose max-w-none focus:outline-none w-full p-4',
+        class: 'prose max-w-none focus:outline-none w-full p-6 text-slate-800 leading-relaxed',
       },
     },
   })
@@ -33,27 +30,33 @@ function TextEditor({fileId}) {
     editor && editor.commands.setContent(notes)
   },[editor&&notes])
 
-  
-
   if (!editor) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center space-y-4">
+          <div className="relative">
+            <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
+            <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-blue-400 rounded-full animate-ping mx-auto"></div>
+          </div>
+          <p className="text-slate-600 font-medium">Loading editor...</p>
+        </div>
       </div>
     )
   }
 
-
   return (
-    <div className="flex flex-col h-screen">
-      <div className="p-2 border-b border-gray-300">
+    <div className="flex flex-col h-full">
+      {/* Toolbar */}
+      <div className="p-3 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50">
         <EditorExtensions editor={editor} />
       </div>
+      
+      {/* Editor Content */}
       <div className="flex-1 overflow-hidden">
         <div className="h-full flex flex-col">
           <EditorContent
             editor={editor}
-            className="flex-1 overflow-y-auto border border-gray-300 rounded-lg shadow-sm bg-white mx-4 mb-4"
+            className="flex-1 overflow-y-auto bg-white border border-slate-200 rounded-lg shadow-sm mx-4 mb-4 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all duration-200"
           />
         </div>
       </div>
