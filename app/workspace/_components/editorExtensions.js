@@ -181,100 +181,87 @@ function EditorExtensions({ editor }) {
   };
 
   return (
-    <div className="flex flex-wrap gap-4 p-2 bg-gray-50 rounded-lg shadow-lg border border-gray-200">
+    <div className="flex gap-x-2 p-1 bg-gray-50 rounded shadow border border-gray-200 justify-between items-center w-full whitespace-nowrap">
       <button
         onClick={() => editor.chain().focus().toggleBold().run()}
-        className={`p-3 rounded-md ${editor.isActive("bold") ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 hover:shadow-sm transition-all`}
+        className={`p-1 px-3 min-w-[36px] flex-1 rounded ${editor.isActive("bold") ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 transition-all text-xs`}
         title="Bold"
       >
-        <FaBold className="w-4 h-4" />
+        <FaBold className="w-3 h-3" />
       </button>
 
       <button
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={`p-3 rounded-md ${editor.isActive("italic") ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 hover:shadow-sm transition-all`}
+        className={`p-1 px-3 min-w-[36px] flex-1 rounded ${editor.isActive("italic") ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 transition-all text-xs`}
         title="Italic"
       >
-        <FaItalic className="w-4 h-4" />
+        <FaItalic className="w-3 h-3" />
       </button>
 
       <button
         onClick={() => editor.chain().focus().toggleStrike().run()}
-        className={`p-3 rounded-md ${editor.isActive("strike") ? "bg-red-500 text-white" : "bg-white"} border border-gray-300 hover:bg-red-100 hover:shadow-sm transition-all`}
+        className={`p-1 px-3 min-w-[36px] flex-1 rounded ${editor.isActive("strike") ? "bg-red-500 text-white" : "bg-white"} border border-gray-300 hover:bg-red-100 transition-all text-xs`}
         title="Strikethrough"
       >
-        <FaStrikethrough className="w-4 h-4" />
+        <FaStrikethrough className="w-3 h-3" />
       </button>
 
       <button
         onClick={() => editor.chain().focus().undo().run()}
         disabled={!editor.can().undo()}
-        className={`p-3 rounded-md ${!editor.can().undo() ? "bg-gray-300 cursor-not-allowed" : "bg-white"} border border-gray-300 hover:bg-gray-200 hover:shadow-sm transition-all`}
+        className={`p-1 px-3 min-w-[36px] flex-1 rounded ${!editor.can().undo() ? "bg-gray-300 cursor-not-allowed" : "bg-white"} border border-gray-300 hover:bg-gray-200 transition-all text-xs`}
         title="Undo"
       >
-        <FaUndo className="w-4 h-4" />
+        <FaUndo className="w-3 h-3" />
       </button>
 
       <button
         onClick={() => editor.chain().focus().redo().run()}
         disabled={!editor.can().redo()}
-        className={`p-3 rounded-md ${!editor.can().redo() ? "bg-gray-300 cursor-not-allowed" : "bg-white"} border border-gray-300 hover:bg-gray-200 hover:shadow-sm transition-all`}
+        className={`p-1 px-3 min-w-[36px] flex-1 rounded ${!editor.can().redo() ? "bg-gray-300 cursor-not-allowed" : "bg-white"} border border-gray-300 hover:bg-gray-200 transition-all text-xs`}
         title="Redo"
       >
-        <FaRedo className="w-4 h-4" />
+        <FaRedo className="w-3 h-3" />
       </button>
 
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={`p-3 rounded-md ${editor.isActive("heading", { level: 1 }) ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 hover:shadow-sm transition-all`}
+        className={`p-1 px-3 min-w-[36px] flex-1 rounded ${editor.isActive("heading", { level: 1 }) ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 transition-all text-xs`}
         title="Heading 1"
       >
-        <span className="text-sm font-bold">H1</span>
+        <span className="text-xs font-bold">H1</span>
       </button>
 
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={`p-3 rounded-md ${editor.isActive("heading", { level: 2 }) ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 hover:shadow-sm transition-all`}
+        className={`p-1 px-3 min-w-[36px] flex-1 rounded ${editor.isActive("heading", { level: 2 }) ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 transition-all text-xs`}
         title="Heading 2"
       >
-        <span className="text-sm font-semibold">H2</span>
+        <span className="text-xs font-semibold">H2</span>
       </button>
 
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        className={`p-3 rounded-md ${editor.isActive("heading", { level: 3 }) ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 hover:shadow-sm transition-all`}
+        className={`p-1 px-3 min-w-[36px] flex-1 rounded ${editor.isActive("heading", { level: 3 }) ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 transition-all text-xs`}
         title="Heading 3"
       >
-        <span className="text-sm font-normal">H3</span>
+        <span className="text-xs font-normal">H3</span>
       </button>
 
       <button
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={`p-3 rounded-md ${editor.isActive("bulletList") ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 hover:shadow-sm transition-all`}
+        className={`p-1 px-3 min-w-[36px] flex-1 rounded ${editor.isActive("bulletList") ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 transition-all text-xs`}
         title="Bullet List"
       >
-        <FaListUl className="w-4 h-4" />
+        <FaListUl className="w-3 h-3" />
       </button>
 
       <button
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        className={`p-3 rounded-md ${editor.isActive("blockquote") ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 hover:shadow-sm transition-all`}
+        className={`p-1 px-3 min-w-[36px] flex-1 rounded ${editor.isActive("blockquote") ? "bg-blue-500 text-white" : "bg-white"} border border-gray-300 hover:bg-blue-100 transition-all text-xs`}
         title="Blockquote"
       >
-        <FaQuoteLeft className="w-4 h-4" />
-      </button>
-
-      <button
-        onClick={onAIClick}
-        disabled={isGenerating}
-        className={`p-3 rounded-md ${isGenerating ? "bg-purple-300" : "bg-white"} border border-gray-300 hover:bg-purple-100 hover:shadow-sm transition-all`}
-        title="AI Assist"
-      >
-        {isGenerating ? (
-          <FaSpinner className="w-4 h-4 text-purple-500 animate-spin" />
-        ) : (
-          <FaMagic className="w-4 h-4 text-purple-500" />
-        )}
+        <FaQuoteLeft className="w-3 h-3" />
       </button>
     </div>
   );

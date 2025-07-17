@@ -135,18 +135,6 @@ function Page() {
                 >
                   <div className="relative flex flex-col items-center bg-white/70 backdrop-blur-sm border border-slate-200 rounded-2xl shadow-sm hover:shadow-xl hover:scale-105 transition-all duration-300 p-5 cursor-pointer h-full min-h-[260px] hover:border-blue-200">
                     
-                    {/* Delete Button */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedFileId(file.fileId);
-                        setShowDeleteDialog(true);
-                      }}
-                      className="absolute top-2 right-2 z-10 p-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 transition-all duration-200 opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-
                     {/* File Icon */}
                     <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
                       <FileText className="w-10 h-10 text-blue-600" />
@@ -169,6 +157,33 @@ function Page() {
                         </div>
                         <p className="text-xs text-slate-500 mt-1">Ready for AI analysis</p>
                       </div>
+                    </div>
+
+                    {/* Delete Button (top right, only on sm and up) */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedFileId(file.fileId);
+                        setShowDeleteDialog(true);
+                      }}
+                      className="hidden sm:block absolute top-2 right-2 z-10 p-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 transition-all duration-200"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+
+                    {/* Delete Button (bottom, only on mobile) */}
+                    <div className="block sm:hidden w-full mt-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedFileId(file.fileId);
+                          setShowDeleteDialog(true);
+                        }}
+                        className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-gradient-to-r from-red-600 to-red-700 text-white font-semibold text-sm shadow hover:from-red-700 hover:to-red-800 transition-all duration-200"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </button>
                     </div>
                   </div>
                 </div>

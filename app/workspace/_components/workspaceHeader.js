@@ -42,10 +42,10 @@ function WorkspaceHeader({ fileName }) {
         {/* Center: File Name */}
         <div className="flex-1 text-center">
           <div className="flex items-center justify-center space-x-2">
-            <div className="w-5 h-5 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-2.5 h-2.5 text-blue-600" />
+            <div className="w-7 h-7 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-lg flex items-center justify-center">
+              <FileText className="w-5 h-5 text-blue-600" />
             </div>
-            <h2 className="text-slate-900 font-medium text-sm truncate max-w-md">
+            <h2 className="text-slate-900 font-semibold text-base truncate max-w-md">
               {fileName ? (
                 <span className="text-slate-900">{fileName}</span>
               ) : (
@@ -53,9 +53,6 @@ function WorkspaceHeader({ fileName }) {
               )}
             </h2>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5 hidden sm:block">
-            AI-Powered Study Workspace
-          </p>
         </div>
 
         {/* UserButton (md and up screens only) */}
