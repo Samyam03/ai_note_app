@@ -7,6 +7,10 @@ import { api } from "@/convex/_generated/api";
 import Image from 'next/image';
 import DeleteDialogBox from './_components/deleteDialogBox';
 import { FileText, Calendar, Trash2, Sparkles } from 'lucide-react';
+import Dialogbox from './_components/dialogbox';
+import { Button } from '@/components/ui/button';
+import { Upload } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 function Page() {
   const { user } = useUser();
@@ -32,6 +36,7 @@ function Page() {
 
   const isLoading = fileList === undefined;
   const skeletonArray = new Array(8).fill(0);
+  const router = useRouter();
 
   return (
     <div className="text-slate-800 p-4">
@@ -102,11 +107,16 @@ function Page() {
       {/* Files Section */}
       {(isLoading || fileList?.length > 0) ? (
         <div>
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
             <h3 className="text-xl font-semibold text-slate-900">Your Documents</h3>
-            <p className="text-sm text-slate-500">
-              {isLoading ? 'Loading...' : `${fileList?.length || 0} document${fileList?.length !== 1 ? 's' : ''}`}
-            </p>
+            <div className="mt-2 sm:mt-0">
+              <Dialogbox>
+                <Button className="w-full sm:w-auto min-w-[180px] sm:min-w-[220px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-base font-bold py-3 px-12 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:scale-105 flex items-center justify-center space-x-3">
+                  <Upload className="w-8 h-8" />
+                  <span className='tracking-wide'>Upload PDF</span>
+                </Button>
+              </Dialogbox>
+            </div>
           </div>
           
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 items-stretch">
@@ -129,7 +139,7 @@ function Page() {
                   key={file.fileId}
                   onClick={() => {
                     setIsNavigating(true);
-                    window.location.href = `/workspace/${file.fileId}`;
+                    router.push(`/workspace/${file.fileId}`);
                   }}
                   className="relative group"
                 >
@@ -197,9 +207,15 @@ function Page() {
             <FileText className="w-10 h-10 text-blue-600" />
           </div>
           <h3 className="text-xl font-semibold text-slate-900 mb-2">No documents yet</h3>
-          <p className="text-slate-600 max-w-md">
+          <p className="text-slate-600 max-w-md mb-4">
             Upload your first PDF to start creating AI-powered study notes and get intelligent responses to your questions.
           </p>
+          <Dialogbox>
+            <Button className="w-full sm:w-auto min-w-[180px] sm:min-w-[220px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-base font-bold py-3 px-12 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-200 transform hover:scale-105 flex items-center justify-center space-x-3">
+              <Upload className="w-8 h-8" />
+              <span className='tracking-wide'>Upload PDF</span>
+            </Button>
+          </Dialogbox>
         </div>
       )}
 

@@ -22,38 +22,8 @@ function Header() {
           </div>
         </div>
 
-        {/* Upload Button (below md screens only) */}
-        <div className="block md:hidden flex-shrink-0 ml-auto">
-          <Dialogbox>
-            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-semibold py-2 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 flex items-center space-x-2">
-              <Upload className="w-3 h-3" />
-              <span>Upload PDF</span>
-            </Button>
-          </Dialogbox>
-        </div>
-
-        {/* Upload + UserButton (md and up screens only) */}
-        <div className="hidden md:flex items-center gap-3 flex-shrink-0 ml-auto">
-          <Dialogbox>
-            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-semibold py-2 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 flex items-center space-x-2">
-              <Upload className="w-4 h-4" />
-              <span>Upload PDF</span>
-            </Button>
-          </Dialogbox>
-          <SignedIn>
-            <UserButton 
-              afterSignOutUrl="/"
-              appearance={{
-                elements: {
-                  avatarBox: "w-9 h-9 rounded-lg border-2 border-slate-200 hover:border-blue-300 transition-colors duration-200"
-                }
-              }}
-            />
-          </SignedIn>
-        </div>
-
-        {/* UserButton (below md screens only) */}
-        <div className="block md:hidden flex-shrink-0">
+        {/* UserButton (all screens) */}
+        <div className="flex items-center gap-3 flex-shrink-0 ml-auto">
           <SignedIn>
             <UserButton 
               afterSignOutUrl="/"

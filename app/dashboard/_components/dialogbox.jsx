@@ -19,6 +19,7 @@ import { Loader2Icon, Upload, FileText, X, CheckCircle } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '@clerk/nextjs';
 import axios from "axios";
+import { createPortal } from 'react-dom';
 
 function Dialogbox({ children }) {
   const generateUploadUrl = useMutation(api.filestorage.generateUploadUrl);
@@ -171,10 +172,11 @@ function Dialogbox({ children }) {
         </DialogContent>
       </Dialog>
 
-      {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+      {loading && typeof window !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-white/80 backdrop-blur-sm">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

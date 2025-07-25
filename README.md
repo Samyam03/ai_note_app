@@ -1,6 +1,9 @@
-# AI Note App
+# NoteGenius – AI Note App
 
 A modern web application for taking, editing, and managing notes, with AI-powered features and PDF support.
+
+[![Vercel](https://vercelbadge.vercel.app/api/Samyam03/ai_note_app)](https://notegenius-kappa.vercel.app/)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ---
 
@@ -31,6 +34,7 @@ Access the app here: [notegenius-kappa.vercel.app](https://notegenius-kappa.verc
 - **Gemini API** – Advanced AI features (text generation, summarization)
 - **PDF.js** – PDF rendering in-browser
 - **Tailwind CSS** – Utility-first CSS styling
+- **Vercel** – Cloud deployment and hosting
 
 ---
 
@@ -111,6 +115,7 @@ To deploy your own version, push to your GitHub and connect the repo to Vercel.
 - [Gemini API Documentation](https://ai.google.dev/gemini-api/docs)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [PDF.js Documentation](https://mozilla.github.io/pdf.js/)
+- [Vercel Documentation](https://vercel.com/docs)
 
 ---
 
@@ -119,3 +124,14 @@ To deploy your own version, push to your GitHub and connect the repo to Vercel.
 Contributions are welcome! Feel free to open issues or submit pull requests.
 
 ---
+
+## 📎 Links
+
+- **Live App:** [notegenius-kappa.vercel.app](https://notegenius-kappa.vercel.app/)
+- **GitHub:** [github.com/Samyam03/ai_note_app](https://github.com/Samyam03/ai_note_app)
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License.
