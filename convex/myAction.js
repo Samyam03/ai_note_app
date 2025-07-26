@@ -46,21 +46,20 @@ export const search = action({
       { ctx }
     );
     
-    // First try with filter parameter 
+    // Optimized search with reduced results and direct filtering
     try {
       const results = await vectorStore.similaritySearch(
         args.query, 
-        5, 
+        3, // Reduced from 5 to 3 for faster processing
         { fileId: args.fileId }
       );
       return JSON.stringify(results);
     } catch (error) {
-      
-      // Fallback: get results and filter them afterward
-      const rawResults = await vectorStore.similaritySearch(args.query, 10);
+      // Fallback with reduced results
+      const rawResults = await vectorStore.similaritySearch(args.query, 5); // Reduced from 10 to 5
       const filteredResults = rawResults.filter(item => 
         item.metadata && item.metadata.fileId === args.fileId
-      );
+      ).slice(0, 3); // Limit to top 3 results
       
       return JSON.stringify(filteredResults);
     }

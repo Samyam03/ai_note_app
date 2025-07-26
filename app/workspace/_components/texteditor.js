@@ -49,37 +49,63 @@ function TextEditor({fileId}) {
       toast.error("Please enter a question")
       return
     }
+    
+    // Start timing
+    const startTime = performance.now()
     toast("AI is fetching the result")
     setIsGenerating(true)
+    
     try {
+      // Phase 1: Search for relevant context
+      const searchStartTime = performance.now()
       const searchResult = await searchAI({
         query: question,
         fileId: fileId,
       })
+      const searchEndTime = performance.now()
+      const searchTime = ((searchEndTime - searchStartTime) / 1000).toFixed(2)
+      
       const unformattedAnswer = JSON.parse(searchResult)
-      let context = ""
-      unformattedAnswer?.forEach((item) => {
-        context += item.pageContent + "\n\n"
-      })
+      // Optimized context building - limit content length for faster processing
+      let context = unformattedAnswer?.slice(0, 2).map(item => item.pageContent).join("\n\n") || ""
       if (!context.trim()) {
         toast.error("No relevant context found for your query")
         return
       }
-      const prompt = `You are an advanced document formatting assistant. Follow these STRICT RULES:\n\n1. PRIORITIZE EXPLICIT INSTRUCTIONS:\n   - If query contains formatting commands (e.g., "in 3 points", "as list", "use headings"):\n     * Implement EXACTLY as specified\n     * Match quantity/type precisely (3 bullet points = 3 <li> items)\n     * Use matching HTML tags immediately without commentary\n\n2. FORMATTING TEMPLATES (when no explicit instructions):\n\n   DESCRIPTIVE QUERIES:\n   <h3><strong>Contextual Background</strong></h3>\n   <p>[Comprehensive introduction establishing relevance and historical context]</p>\n   <p>[Detailed explanation of key concepts and terminology]</p>\n   <p>[Current state of affairs and why this matters now]</p>\n\n   <h3><strong>In-Depth Analysis</strong></h3>\n   <p>[Thorough examination of all relevant aspects with supporting evidence]</p>\n   <p>[Multiple paragraphs analyzing different perspectives and viewpoints]</p>\n   <p>[Detailed case studies or real-world examples where applicable]</p>\n   <p>[Statistical data or research findings when available]</p>\n   <p>[Comparative analysis with similar concepts or alternative approaches]</p>\n\n   <h3><strong>Insights</strong></h3>\n\n   <strong>1. [Detailed Insight Title]</strong>\n   <p>[Expanded explanation with multiple supporting points]</p>\n   <p>[Practical implications and potential applications]</p>\n   <p>[Limitations or counterarguments to consider]</p>\n\n   <strong>2. [Detailed Insight Title]</strong>\n   <p>[Expanded explanation with multiple supporting points]</p>\n   <p>[Practical implications and potential applications]</p>\n   <p>[Limitations or counterarguments to consider]</p>\n\n   <strong>3. [Detailed Insight Title]</strong>\n   <p>[Expanded explanation with multiple supporting points]</p>\n   <p>[Practical implications and potential applications]</p>\n   <p>[Limitations or counterarguments to consider]</p>\n\n   <h3><strong>Conclusion</strong></h3>\n   <p>[Comprehensive summary synthesizing all key points]</p>\n   <p>[Future outlook and potential developments]</p>\n   <p>[Actionable recommendations or next steps]</p>\n\n   <h3><strong>Summary</strong></h3>\n   <p>[Detailed recap of most critical elements and their significance]</p>\n   <p>[Key takeaways highlighted for quick reference]</p>\n\n   DIRECT QUESTIONS:\n   <p>[Single concise answer in 1-2 sentences]</p>\n\n3. CONTENT RULES:\n   - Use headings only when instructed or for multi-section answers\n   - Bold ONLY section titles and insight headers\n   - Lists must match requested count exactly\n   - Never add markdown, only use allowed HTML tags\n\n4. ERROR CONDITIONS:\n   <h3>Missing Information</h3>\n   <p>Required: [Specific data needed]</p>\n   <p>Example formats: [Bullet list of options]</p>\n\nALLOWED TAGS: <h2>, <h3>, <p>, <ul>, <ol>, <li>, <strong>\n\nQUESTION:\n\nCONTEXT:\n${context}\n\nQUERY: "${question}"\n\nRespond ONLY with properly tagged content. No explanations. No markdown. Never apologize.`;
+      
+      // Phase 2: Generate AI response
+      const aiStartTime = performance.now()
+      const prompt = `Answer the question based on the context. Use HTML tags: <h3>, <p>, <ul>, <ol>, <li>, <strong>.\n\nIf question asks for specific format (e.g., "3 points", "list"), follow exactly.\n\nFor descriptive questions: provide comprehensive analysis with background, analysis, insights, and conclusion.\n\nFor direct questions: give concise 1-2 sentence answer.\n\nCONTEXT:\n${context}\n\nQUESTION: "${question}"\n\nRespond with HTML content only. No explanations.`;
       const response = await generateAIResponse(prompt)
+      const aiEndTime = performance.now()
+      const aiTime = ((aiEndTime - aiStartTime) / 1000).toFixed(2)
+      
+      // Calculate total time
+      const totalTime = ((aiEndTime - startTime) / 1000).toFixed(2)
+      
+      // Show timing information in console only
+      console.log(`⏱️ AI Response Timing:`)
+      console.log(`   🔍 Search phase: ${searchTime}s`)
+      console.log(`   🤖 AI generation: ${aiTime}s`)
+      console.log(`   ⏱️ Total time: ${totalTime}s`)
+      
+      // Optimized response cleaning - single pass with combined regex
       let cleanedResponse = response
-        .replace(/```html|```/g, "")
-        .replace(/^"+|"+$/g, "")
-        .replace(/\\n/g, "\n")
-        .replace(/\\"/g, '"')
+        .replace(/```html|```|^"+|"+$|\\n|\\"/g, (match) => {
+          if (match === '```html' || match === '```') return '';
+          if (match === '^"+' || match === '"+$') return '';
+          if (match === '\\n') return '\n';
+          if (match === '\\"') return '"';
+          return match;
+        })
         .replace(/\n\s*\n\s*\n/g, "\n\n")
         .replace(/^\s+|\s+$/g, "")
         .replace(/(<[^>]+>)\s+/g, "$1")
         .replace(/\s+(<\/[^>]+>)/g, "$1")
         .trim()
       const formattedContent = `<div style=\"background-color: #eff6ff; border-radius: 0.5rem; margin: 1rem 0; border: 1px solid #bfdbfe; overflow: auto; width: 100%;\"><strong>QUESTION: ${question}</strong><div><strong>ANSWER:</strong> ${cleanedResponse}</div></div>`;
-      editor.chain().focus().insertContent('<p></p><p></p>').run();
-      editor.chain().focus().insertContent(formattedContent).run()
+      // Optimized editor insertion - single chain operation
+      editor.chain().focus().insertContent('<p></p><p></p>' + formattedContent).run()
       saveNotes({
         notes: editor.getHTML(),
         fileId: fileId,
