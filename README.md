@@ -11,6 +11,22 @@ A modern web application for taking, editing, and managing notes, with AI-powere
 
 Access the app here: [notegenius-kappa.vercel.app](https://notegenius-kappa.vercel.app/)
 
+## 🔑 Demo Credentials
+
+Use these demo credentials to sign in quickly:
+
+- **Demo Account 1**
+  - **Email**: test@email.com
+  - **Password**: ExploreNow!2025
+- **Demo Account 2**
+  - **Email**: sam@gmail.com
+  - **Password**: TalentPortal@2025
+- **Demo Account 3**
+  - **Email**: view@example.com
+  - **Password**: TryThisDemo!88
+
+Note: These are demo accounts for testing only. Data may be visible to other demo users.
+
 ---
 
 ## ✨ Features
