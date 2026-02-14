@@ -77,29 +77,36 @@ export const deleteFile = mutation({
     storageId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    let storageId = args.storageId;
+    const fileId = args.fileId;
 
-    if (!storageId) {
-      const [doc] = await ctx.db
-        .query("pdfFiles")
-        .filter((q) => q.eq(q.field("fileId"), args.fileId))
-        .collect();
+    const [pdfDoc] = await ctx.db
+      .query("pdfFiles")
+      .filter((q) => q.eq(q.field("fileId"), fileId))
+      .collect();
 
-      if (!doc) throw new Error("File not found in database");
-      storageId = doc.storageId;
+    if (!pdfDoc) throw new Error("File not found in database");
 
-      if (!storageId) throw new Error("Missing storageId in record");
-      await ctx.db.delete(doc._id);
-    } else {
-      const [doc] = await ctx.db
-        .query("pdfFiles")
-        .filter((q) => q.eq(q.field("fileId"), args.fileId))
-        .collect();
-
-      if (!doc?._id) throw new Error("File not found in database");
-
+    const storageId = args.storageId ?? pdfDoc.storageId;
+    if (storageId) {
       await ctx.storage.delete(storageId);
-      await ctx.db.delete(doc._id);
+    }
+
+    await ctx.db.delete(pdfDoc._id);
+
+    const documentChunks = await ctx.db
+      .query("documents")
+      .withIndex("by_fileId", (q) => q.eq("fileId", fileId))
+      .collect();
+    for (const chunk of documentChunks) {
+      await ctx.db.delete(chunk._id);
+    }
+
+    const notesRows = await ctx.db
+      .query("notes")
+      .withIndex("by_fileId", (q) => q.eq("fileId", fileId))
+      .collect();
+    for (const note of notesRows) {
+      await ctx.db.delete(note._id);
     }
 
     return { success: true };

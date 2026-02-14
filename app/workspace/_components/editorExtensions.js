@@ -51,17 +51,33 @@ function EditorExtensions({ editor }) {
         fileId: fileId,
       });
 
-      // Optimized context building - limit content length for faster processing
-      const unformattedAnswer = JSON.parse(searchResult);
-      let context = unformattedAnswer?.slice(0, 2).map(item => item.pageContent).join("\n\n") || "";
+      // Optimized context building - support both pageContent (LangChain) and text (Convex store)
+      const parsed = JSON.parse(searchResult);
+      const resultsArray = Array.isArray(parsed) ? parsed : (parsed?.documents ?? parsed?.results ?? []);
+      const getContent = (item) => item?.pageContent ?? item?.text ?? "";
+      let context = resultsArray.slice(0, 5).map(getContent).filter(Boolean).join("\n\n") || "";
 
-      if (!context.trim()) {
-        toast.error("No relevant context found for your query");
-        return;
+      const hasDocumentContext = context.trim().length > 0;
+      if (!hasDocumentContext) {
+        toast("No document context found; answering from your question only.");
       }
 
-      // Optimized prompt for faster AI processing
-      const prompt = `Answer the question based on the context. Use HTML tags: <h3>, <p>, <ul>, <ol>, <li>, <strong>.\n\nIf question asks for specific format (e.g., "3 points", "list"), follow exactly.\n\nFor descriptive questions: provide comprehensive analysis with background, analysis, insights, and conclusion.\n\nFor direct questions: give concise 1-2 sentence answer.\n\nCONTEXT:\n${context}\n\nQUESTION: "${selectedText}"\n\nRespond with HTML content only. No explanations.`;
+      const contextSection = hasDocumentContext
+        ? `## Excerpts from the user's document\n\n${context}\n\n## User's question\n"${selectedText}"`
+        : `The user asked (no document excerpts were available):\n"${selectedText}"`;
+
+      const prompt = `You are a skilled assistant that answers questions about the user's uploaded document. Use only the excerpts below. Write in a clear, engaging way—like a sharp summary or a helpful tutor. Do not say you lack context when excerpts are provided.
+
+Output rules:
+- Reply in HTML only: <h3> for section titles, <p> for paragraphs, <ul><li>...</li></ul> or <ol><li>...</li></ol> for lists, <strong> for emphasis. Use real list tags when listing items or steps.
+- Summaries ("summarize this book", "what is this about?"): Lead with the main idea and why it matters. Then use short sections or bullet points for key themes, techniques, or takeaways. Focus on the actual content and value to the reader; skip or mention only in passing any legal/copyright boilerplate from the excerpts.
+- Factual questions ("who wrote this?", "when?", "what's the title?"): One short, complete answer—a sentence or two, well phrased—no filler.
+- Format requests ("3 points", "list", "bullet points"): Follow the requested format exactly.
+- Analytical or "explain" questions: Short intro, then clear points or steps, then a brief conclusion.
+
+${contextSection}
+
+Respond with HTML only. No meta-commentary or "I cannot" when context is given.`;
 
       const response = await generateAIResponse(prompt);
 

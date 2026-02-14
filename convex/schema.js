@@ -18,13 +18,17 @@ export default defineSchema({
         embedding: v.array(v.number()),
         text: v.string(),
         metadata: v.any(),
-    }).vectorIndex("byEmbedding", {
-        vectorField: "embedding",
-        dimensions: 768, 
-    }),
-    notes: defineTable({
-        fileId: v.string(),  
-        notes: v.any(),     
-        createdBy: v.string()
+        fileId: v.optional(v.string()),
     })
+        .index("by_fileId", ["fileId"])
+        .vectorIndex("byEmbedding", {
+            vectorField: "embedding",
+            dimensions: 3072,
+            filterFields: ["metadata.fileId"],
+        }),
+    notes: defineTable({
+        fileId: v.string(),
+        notes: v.any(),
+        createdBy: v.string()
+    }).index("by_fileId", ["fileId"]),
 });
