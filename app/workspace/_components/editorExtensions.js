@@ -111,15 +111,25 @@ Respond with HTML only. No meta-commentary or "I cannot" when context is given.`
       });
     } catch (error) {
       console.error("AI generation failed:", error);
-      toast.error("AI generation failed");
 
-      // Insert error message
-      editor.commands.insertContent(`
-        <div style="background-color: #fee2e2; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; border: 1px solid #fecaca;">
-          <p style="color: #b91c1c; font-weight: 500;">Error: Could not generate AI response</p>
-          <p style="color: #ef4444; font-size: 0.875rem;">${error.message || "Please try again later"}</p>
-        </div>
-      `);
+      const isQuotaError =
+        error.message?.toLowerCase().includes("quota") ||
+        error.message?.includes("429");
+
+      if (isQuotaError) {
+        toast(
+          "We're a bit busy right now. Please try again in a minute. We'll have your answer ready!",
+          { duration: 5000 }
+        );
+      } else {
+        toast.error("Something went wrong. Please try again.");
+        editor.commands.insertContent(`
+          <div style="background-color: #fee2e2; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; border: 1px solid #fecaca;">
+            <p style="color: #b91c1c; font-weight: 500;">Could not generate a response</p>
+            <p style="color: #ef4444; font-size: 0.875rem;">${error.message || "Please try again later"}</p>
+          </div>
+        `);
+      }
     } finally {
       setIsGenerating(false);
     }
