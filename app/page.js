@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { SignInButton, SignedOut } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
@@ -10,25 +10,21 @@ import { ArrowRight, Sparkles, Zap, BookOpen, Search, FileText, Users, Star, Che
 export default function HomePage() {
   const { isSignedIn, isLoaded } = useUser();
   const router = useRouter();
-  const [redirecting, setRedirecting] = useState(false);
 
-  // Redirect if signed in
   useEffect(() => {
     if (isLoaded && isSignedIn) {
-      setRedirecting(true);
-      router.push("/dashboard");
+      router.replace('/dashboard');
     }
   }, [isSignedIn, isLoaded, router]);
 
-  if (redirecting) {
+  if (!isLoaded || isSignedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         <div className="text-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
-            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-blue-400 rounded-full animate-ping mx-auto"></div>
-          </div>
-          <p className="text-slate-600 font-medium">Redirecting to your dashboard...</p>
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto" />
+          <p className="text-slate-600 font-medium">
+            {isSignedIn ? 'Opening your dashboard...' : 'Loading...'}
+          </p>
         </div>
       </div>
     );
@@ -49,7 +45,7 @@ export default function HomePage() {
               </span>
             </div>
             <SignedOut>
-              <SignInButton mode="modal">
+              <SignInButton mode="redirect">
                 <button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
                   Get Started
                 </button>
@@ -88,7 +84,7 @@ export default function HomePage() {
             {/* CTA Button */}
             <div className="flex justify-center items-center">
               <SignedOut>
-                <SignInButton mode="modal">
+                <SignInButton mode="redirect">
                   <button className="group bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center space-x-2">
                     <span>Start Learning Today</span>
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -97,99 +93,9 @@ export default function HomePage() {
               </SignedOut>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto pt-8">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">10K+</div>
-                <div className="text-slate-600">Active Students</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-indigo-600">50K+</div>
-                <div className="text-slate-600">Notes Created</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600">99%</div>
-                <div className="text-slate-600">Satisfaction Rate</div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
-
-      {/* Demo Credentials Section - Only for Signed Out Users */}
-      <SignedOut>
-        <section className="py-16 bg-gradient-to-b from-slate-50 to-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-                Try NoteGenius Now
-              </h2>
-              <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-                Use these demo credentials to explore the app and experience the power of AI-powered note-taking
-              </p>
-            </div>
-            
-            <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  {
-                    email: "test@email.com",
-                    password: "ExploreNow!2025",
-                    label: "Demo Account 1"
-                  },
-                  {
-                    email: "sam@gmail.com", 
-                    password: "TalentPortal@2025",
-                    label: "Demo Account 2"
-                  },
-                  {
-                    email: "view@example.com",
-                    password: "TryThisDemo!88", 
-                    label: "Demo Account 3"
-                  }
-                ].map((credential, index) => (
-                  <div key={index} className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-                    <div className="text-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto mb-3">
-                        {index + 1}
-                      </div>
-                      <h3 className="font-semibold text-slate-900">{credential.label}</h3>
-                    </div>
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                        <div className="bg-white rounded-lg p-3 border border-slate-300 font-mono text-sm text-slate-800 break-all">
-                          {credential.email}
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                        <div className="bg-white rounded-lg p-3 border border-slate-300 font-mono text-sm text-slate-800">
-                          {credential.password}
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-8 text-center">
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <div className="flex items-center justify-center space-x-2 text-amber-800">
-                    <div className="w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                      !
-                    </div>
-                    <span className="text-sm font-medium">
-                      These are demo accounts for testing purposes. Your data will be shared with other demo users.
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </SignedOut>
 
       {/* Features Section */}
       <section className="py-20 bg-gradient-to-b from-white to-slate-50">
@@ -375,7 +281,7 @@ export default function HomePage() {
             Join thousands of students who are already using NoteGenius to enhance their study experience and achieve better results.
           </p>
           <SignedOut>
-            <SignInButton mode="modal">
+            <SignInButton mode="redirect">
               <button className="bg-white text-blue-600 hover:bg-slate-100 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-xl flex items-center space-x-2 mx-auto">
                 <span>Start Your Free Trial</span>
                 <ArrowRight className="w-5 h-5" />

@@ -13,12 +13,12 @@ import { Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 function Page() {
-  const { user } = useUser();
+  const { user, isLoaded: userLoaded } = useUser();
   const userEmail = user?.primaryEmailAddress?.emailAddress;
 
   const fileList = useQuery(
     api.filestorage.getAllFiles,
-    userEmail ? { userEmail } : undefined
+    userEmail ? { userEmail } : 'skip'
   );
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -34,7 +34,7 @@ function Page() {
     });
   };
 
-  const isLoading = fileList === undefined;
+  const isLoading = !userLoaded || (!!userEmail && fileList === undefined);
   const skeletonArray = new Array(8).fill(0);
   const router = useRouter();
 
